@@ -7,6 +7,7 @@ import { Liqiudation, Mint, Redeem } from "../generated/schema";
 import { getOracle, getPrice, loadCollateralToken } from "./utils/token";
 import { formatUnits } from "./utils/formatUnits";
 import { ERC20_DECIMALS_NUMBER } from "./constants";
+import { loadUser } from "./utils/user";
 
 export function handleMint(event: MintEvent): void {
   const entity = new Mint(event.transaction.hash.concatI32(event.logIndex.toI32()));

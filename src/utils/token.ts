@@ -30,6 +30,7 @@ export function loadCollateralToken(address: Address): CollateralToken {
     token.collateralRatio = BIG_DECIMAL_ZERO;
     token.liquidated = BIG_DECIMAL_ZERO;
     token.liquidatedUSD = BIG_DECIMAL_ZERO;
+    token.userCount = BIG_INT_ZERO;
 
     token.save();
   }

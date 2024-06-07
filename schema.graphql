@@ -63,12 +63,18 @@ type CollateralToken @entity {
 
   collateralRatio: BigDecimal!
 
-  user: [UserCollateralToken!]!
+  # User count
+  userCount: BigInt!
 }
 
 type UserCollateralToken @entity {
-  # Address
+  # token address
   id: ID!
+
+  # mirrored from the smart contract
+  symbol: String!
+  name: String!
+  decimals: BigInt!
 
   # token
   totalValueLocked: BigDecimal!
@@ -85,12 +91,13 @@ type UserCollateralToken @entity {
 
   collateralRatio: BigDecimal!
 
-  user: [User!]!
+  # User count
+  user: User!
 }
 
 type User @entity {
   # Address
   id: ID!
 
-  collateralToken: [UserCollateralToken!]!
+  collateralTokens: [UserCollateralToken!]! @derivedFrom(field: "user")
 }
