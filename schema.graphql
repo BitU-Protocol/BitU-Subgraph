@@ -1,0 +1,80 @@
+type Liqiudation @entity(immutable: true) {
+  id: Bytes!
+  user: Bytes! # address
+  asset: Bytes! # address
+  collateral_amount: BigInt! # uint256
+  bitu_amount: BigInt! # uint256
+  collateral_ratio: BigInt! # uint256
+  timestamp: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Mint @entity(immutable: true) {
+  id: Bytes!
+  minter: Bytes! # address
+  collateral_asset: Bytes! # address
+  collateral_amount: BigInt! # uint256
+  bitu_amount: BigInt! # uint256
+  collateral_ratio: BigInt! # uint256
+  timestamp: BigInt! # uint256
+  mintfee: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Redeem @entity(immutable: true) {
+  id: Bytes!
+  redeemer: Bytes! # address
+  collateral_asset: Bytes! # address
+  collateral_amount: BigInt! # uint256
+  bitu_amount: BigInt! # uint256
+  collateral_ratio: BigInt! # uint256
+  interest: BigInt! # uint256
+  timestamp: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type CollateralToken @entity {
+  # token address
+  id: ID!
+
+  # mirrored from the smart contract
+  symbol: String!
+  name: String!
+  decimals: BigInt!
+
+  # token specific volume
+  totalValueLocked: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
+
+  fees: BigDecimal!
+  feesUSD: BigDecimal!
+
+  # user: UserCollateralToken!
+}
+
+# type UserCollateralToken @entity {
+#   # Address
+#   id: ID!
+
+#   # token specific volume
+#   totalValueLocked: BigDecimal!
+#   totalValueLockedUSD: BigDecimal!
+
+#   fees: BigDecimal!
+#   feesUSD: BigDecimal!
+
+#   user: [User!]!
+# }
+
+# type User @entity {
+#   # Address
+#   id: ID!
+
+#   collateralToken: [UserCollateralToken!]!
+# }
