@@ -1,29 +1,29 @@
 import { Address } from "@graphprotocol/graph-ts";
-import { User, UserCollateralToken } from "../../generated/schema";
+import { User, UserCollateralAsset } from "../../generated/schema";
 import { getDecimals, getName, getSymbol } from "./token";
 import { BIG_DECIMAL_ZERO } from "../constants";
 
-export function loadUserCollateralToken(address: Address): UserCollateralToken {
-  let token = UserCollateralToken.load(address.toHexString());
+export function loadUserCollateralAsset(address: Address): UserCollateralAsset {
+  let userAssetToken = UserCollateralAsset.load(address.toHexString());
 
-  if (!token) {
-    token = new UserCollateralToken(address.toHexString());
-    token.symbol = getSymbol(address);
-    token.name = getName(address);
-    token.decimals = getDecimals(address);
-    token.totalValueLocked = BIG_DECIMAL_ZERO;
-    token.totalValueLockedUSD = BIG_DECIMAL_ZERO;
-    token.fees = BIG_DECIMAL_ZERO;
-    token.feesUSD = BIG_DECIMAL_ZERO;
-    token.bituMinted = BIG_DECIMAL_ZERO;
-    token.bituBurned = BIG_DECIMAL_ZERO;
-    token.collateralRatio = BIG_DECIMAL_ZERO;
-    token.liquidated = BIG_DECIMAL_ZERO;
-    token.liquidatedUSD = BIG_DECIMAL_ZERO;
-    token.save();
+  if (!userAssetToken) {
+    userAssetToken = new UserCollateralAsset(address.toHexString());
+    userAssetToken.symbol = getSymbol(address);
+    userAssetToken.name = getName(address);
+    userAssetToken.decimals = getDecimals(address);
+    userAssetToken.totalValueLocked = BIG_DECIMAL_ZERO;
+    userAssetToken.totalValueLockedUSD = BIG_DECIMAL_ZERO;
+    userAssetToken.fees = BIG_DECIMAL_ZERO;
+    userAssetToken.feesUSD = BIG_DECIMAL_ZERO;
+    userAssetToken.bituMinted = BIG_DECIMAL_ZERO;
+    userAssetToken.bituBurned = BIG_DECIMAL_ZERO;
+    userAssetToken.collateralRatio = BIG_DECIMAL_ZERO;
+    userAssetToken.liquidated = BIG_DECIMAL_ZERO;
+    userAssetToken.liquidatedUSD = BIG_DECIMAL_ZERO;
+    userAssetToken.save();
   }
 
-  return token as UserCollateralToken;
+  return userAssetToken as UserCollateralAsset;
 }
 
 export function loadUser(address: Address): User {

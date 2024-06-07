@@ -39,8 +39,8 @@ type Redeem @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-type CollateralToken @entity {
-  # token address
+type CollateralAsset @entity {
+  # asset token address
   id: ID!
 
   # mirrored from the smart contract
@@ -67,8 +67,8 @@ type CollateralToken @entity {
   userCount: BigInt!
 }
 
-type UserCollateralToken @entity {
-  # token address
+type UserCollateralAsset @entity {
+  # asset token address
   id: ID!
 
   # mirrored from the smart contract
@@ -76,7 +76,7 @@ type UserCollateralToken @entity {
   name: String!
   decimals: BigInt!
 
-  # token
+  # collateral
   totalValueLocked: BigDecimal!
   totalValueLockedUSD: BigDecimal!
 
@@ -99,5 +99,5 @@ type User @entity {
   # Address
   id: ID!
 
-  collateralTokens: [UserCollateralToken!]! @derivedFrom(field: "user")
+  collateralAssets: [UserCollateralAsset!]! @derivedFrom(field: "user")
 }
