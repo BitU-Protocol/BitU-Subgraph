@@ -25,6 +25,11 @@ export function loadCollateralToken(address: Address): CollateralToken {
     token.totalValueLockedUSD = BIG_DECIMAL_ZERO;
     token.fees = BIG_DECIMAL_ZERO;
     token.feesUSD = BIG_DECIMAL_ZERO;
+    token.bituMinted = BIG_DECIMAL_ZERO;
+    token.bituBurned = BIG_DECIMAL_ZERO;
+    token.collateralRatio = BIG_DECIMAL_ZERO;
+    token.liquidated = BIG_DECIMAL_ZERO;
+    token.liquidatedUSD = BIG_DECIMAL_ZERO;
 
     token.save();
   }

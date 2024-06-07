@@ -48,33 +48,49 @@ type CollateralToken @entity {
   name: String!
   decimals: BigInt!
 
-  # token specific volume
+  # token
   totalValueLocked: BigDecimal!
   totalValueLockedUSD: BigDecimal!
+
+  bituMinted: BigDecimal!
+  bituBurned: BigDecimal!
+
+  liquidated: BigDecimal!
+  liquidatedUSD: BigDecimal!
 
   fees: BigDecimal!
   feesUSD: BigDecimal!
 
-  # user: UserCollateralToken!
+  collateralRatio: BigDecimal!
+
+  user: [UserCollateralToken!]!
 }
 
-# type UserCollateralToken @entity {
-#   # Address
-#   id: ID!
+type UserCollateralToken @entity {
+  # Address
+  id: ID!
 
-#   # token specific volume
-#   totalValueLocked: BigDecimal!
-#   totalValueLockedUSD: BigDecimal!
+  # token
+  totalValueLocked: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
 
-#   fees: BigDecimal!
-#   feesUSD: BigDecimal!
+  bituMinted: BigDecimal!
+  bituBurned: BigDecimal!
 
-#   user: [User!]!
-# }
+  liquidated: BigDecimal!
+  liquidatedUSD: BigDecimal!
 
-# type User @entity {
-#   # Address
-#   id: ID!
+  fees: BigDecimal!
+  feesUSD: BigDecimal!
 
-#   collateralToken: [UserCollateralToken!]!
-# }
+  collateralRatio: BigDecimal!
+
+  user: [User!]!
+}
+
+type User @entity {
+  # Address
+  id: ID!
+
+  collateralToken: [UserCollateralToken!]!
+}
