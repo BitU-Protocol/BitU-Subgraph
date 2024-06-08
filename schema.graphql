@@ -65,6 +65,20 @@ type CollateralAsset @entity {
 
   # User count
   userCount: BigInt!
+
+  hourData: [CollateralAssetHourData!]! @derivedFrom(field: "collateralAsset")
+}
+
+type CollateralAssetHourData @entity {
+  # timestamp / 3600
+  id: ID!
+
+  tokenAddress: ID!
+  
+  # date - hour start timestamp
+  date: Int!
+
+  collateralAsset: CollateralAsset!
 }
 
 type UserCollateralAsset @entity {

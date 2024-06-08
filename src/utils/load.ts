@@ -1,5 +1,5 @@
-import { Address } from "@graphprotocol/graph-ts";
-import { CollateralAsset, User, UserCollateralAsset } from "../../generated/schema";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { CollateralAsset, CollateralAssetHourData, User, UserCollateralAsset } from "../../generated/schema";
 import { getDecimals, getName, getSymbol } from "./token";
 import { ADDRESS_ZERO, BIG_DECIMAL_ZERO, BIG_INT_ZERO } from "../constants";
 
@@ -28,8 +28,37 @@ export function loadCollateralAsset(address: Address): CollateralAsset {
   return assetToken as CollateralAsset;
 }
 
+export function loadCollateralAssetHourData(
+  timestamp: BigInt,
+  collateralAsset: CollateralAsset,
+  update: bool
+): CollateralAssetHourData {
+  const SECONDS_IN_HOUR = BigInt.fromI32(60 * 60);
+  const hourId = timestamp.div(SECONDS_IN_HOUR);
+  const hourStartTimestamp = hourId.times(SECONDS_IN_HOUR);
+  const id = collateralAsset.id.concat("-").concat(hourStartTimestamp.toString());
+
+  let assetTokenHourData = CollateralAssetHourData.load(id);
+
+  if (!assetTokenHourData) {
+    assetTokenHourData = new CollateralAssetHourData(id);
+    assetTokenHourData.date = hourStartTimestamp.toI32();
+    assetTokenHourData.tokenAddress = collateralAsset.id;
+    assetTokenHourData.collateralAsset = collateralAsset.id;
+    assetTokenHourData.save();
+  }
+
+  if (update) {
+    assetTokenHourData.tokenAddress = collateralAsset.id;
+    assetTokenHourData.collateralAsset = collateralAsset.id;
+    assetTokenHourData.save();
+  }
+
+  return assetTokenHourData as CollateralAssetHourData;
+}
+
 export function loadUserCollateralAsset(user: Address, token: Address): UserCollateralAsset {
-  const id = user.toHexString().concat("#").concat(token.toHexString());
+  const id = user.toHexString().concat("-").concat(token.toHexString());
   let userAssetToken = UserCollateralAsset.load(id);
 
   if (!userAssetToken) {
