@@ -7,6 +7,7 @@ import { ERC20_DECIMALS_NUMBER } from "../constants";
 import { formatUnits } from "../utils/formatUnits";
 import { loadCollateralAsset, loadCollateralAssetDayData, loadCollateralAssetHourData } from "../utils/load";
 import { getOracle, getPrice } from "../utils/oracle";
+import { safeDiv } from "../utils/safeDiv";
 
 export function handleCollateralAssetInMintEvent(event: MintEvent): void {
   const collateralAsset = loadCollateralAsset(event.params.collateral_asset);
@@ -31,7 +32,7 @@ export function handleCollateralAssetInMintEvent(event: MintEvent): void {
   collateralAsset.fees = fees;
   collateralAsset.feesUSD = feesUSD;
   collateralAsset.bituMinted = bituMinted;
-  collateralAsset.collateralRatio = totalValueLockedUSD.div(bituMinted);
+  collateralAsset.collateralRatio = safeDiv(totalValueLockedUSD, bituMinted);
 
   collateralAsset.save();
 
@@ -60,7 +61,7 @@ export function handleCollateralAssetInRedeemEvent(event: RedeemEvent): void {
   collateralAsset.bituBurned = collateralAsset.bituBurned.plus(
     formatUnits(event.params.bitu_amount, ERC20_DECIMALS_NUMBER)
   );
-  collateralAsset.collateralRatio = totalValueLockedUSD.div(bituMinted);
+  collateralAsset.collateralRatio = safeDiv(totalValueLockedUSD, bituMinted);
 
   collateralAsset.save();
 
@@ -84,7 +85,7 @@ export function handleCollateralAssetInLiqiudationEvent(event: LiqiudationEvent)
 
   collateralAsset.totalValueLocked = totalValueLocked;
   collateralAsset.totalValueLockedUSD = totalValueLockedUSD;
-  collateralAsset.collateralRatio = totalValueLockedUSD.div(collateralAsset.bituMinted);
+  collateralAsset.collateralRatio = safeDiv(totalValueLockedUSD, collateralAsset.bituMinted);
   collateralAsset.liquidated = collateralAsset.liquidated.plus(currentLiquidated);
   collateralAsset.liquidatedUSD = liquidatedUSD;
 

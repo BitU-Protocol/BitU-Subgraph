@@ -7,6 +7,7 @@ import { ERC20_DECIMALS_NUMBER } from "../constants";
 import { formatUnits } from "../utils/formatUnits";
 import { loadUser, loadUserCollateralAsset } from "../utils/load";
 import { getOracle, getPrice } from "../utils/oracle";
+import { safeDiv } from "../utils/safeDiv";
 
 export function handleUserCollateralAssetInMintEvent(event: MintEvent): void {
   const user = loadUser(event.params.minter);
@@ -32,7 +33,7 @@ export function handleUserCollateralAssetInMintEvent(event: MintEvent): void {
   userCollateralAsset.fees = fees;
   userCollateralAsset.feesUSD = feesUSD;
   userCollateralAsset.bituMinted = bituMinted;
-  userCollateralAsset.collateralRatio = totalValueLockedUSD.div(bituMinted);
+  userCollateralAsset.collateralRatio = safeDiv(totalValueLockedUSD, bituMinted);
   userCollateralAsset.user = user.id;
 
   userCollateralAsset.save();
@@ -60,7 +61,7 @@ export function handleUserCollateralAssetInRedeemEvent(event: RedeemEvent): void
   userCollateralAsset.bituBurned = userCollateralAsset.bituBurned.plus(
     formatUnits(event.params.bitu_amount, ERC20_DECIMALS_NUMBER)
   );
-  userCollateralAsset.collateralRatio = totalValueLockedUSD.div(bituMinted);
+  userCollateralAsset.collateralRatio = safeDiv(totalValueLockedUSD, bituMinted);
   userCollateralAsset.user = user.id;
 
   userCollateralAsset.save();
@@ -83,7 +84,7 @@ export function handleUserCollateralAssetInLiqiudationEvent(event: LiqiudationEv
 
   userCollateralAsset.totalValueLocked = totalValueLocked;
   userCollateralAsset.totalValueLockedUSD = totalValueLockedUSD;
-  userCollateralAsset.collateralRatio = totalValueLockedUSD.div(userCollateralAsset.bituMinted);
+  userCollateralAsset.collateralRatio = safeDiv(totalValueLockedUSD, userCollateralAsset.bituMinted);
   userCollateralAsset.liquidated = userCollateralAsset.liquidated.plus(currentLiquidated);
   userCollateralAsset.liquidatedUSD = liquidatedUSD;
   userCollateralAsset.user = user.id;

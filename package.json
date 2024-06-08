@@ -2,9 +2,14 @@
   "name": "bitu-subgraph",
   "license": "UNLICENSED",
   "scripts": {
-    "codegen": "graph codegen",
-    "build": "graph codegen && graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ bitu-protocol",
+    "prepare:bsc": "mustache config/bsc.json src/constants/index.template.ts > src/constants/index.ts",
+    "prepare:chapel": "mustache config/chapel.json src/constants/index.template.ts > src/constants/index.ts",
+    "codegen:bsc": "graph codegen subgraph.bsc.yaml",
+    "codegen:chapel": "graph codegen subgraph.chapel.yaml",
+    "build:bsc": "graph build subgraph.bsc.yaml",
+    "build:chapel": "graph build subgraph.chapel.yaml",
+    "deploy:bsc": "graph deploy --node https://api.studio.thegraph.com/deploy/ bitu-protocol subgraph.bsc.yaml",
+    "deploy:chapel": "graph deploy --node https://api.studio.thegraph.com/deploy/ bitu-protocol-chapel subgraph.chapel.yaml",
     "create-local": "graph create --node http://localhost:8020/ bitu-subgraph",
     "remove-local": "graph remove --node http://localhost:8020/ bitu-subgraph",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 bitu-subgraph",
@@ -13,7 +18,8 @@
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.73.0",
-    "@graphprotocol/graph-ts": "0.32.0"
+    "@graphprotocol/graph-ts": "0.32.0",
+    "mustache": "^4.2.0"
   },
   "devDependencies": {
     "matchstick-as": "0.5.0"
