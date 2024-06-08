@@ -4,16 +4,16 @@ import {
   Redeem as RedeemEvent,
 } from "../generated/BitUMinting/BitUMinting";
 import { Liqiudation, Mint, Redeem } from "../generated/schema";
-import { formatUnits } from "./utils/formatUnits";
-import { ERC20_DECIMALS_NUMBER } from "./constants";
-import { loadUser } from "./utils/user";
-import { loadCollateralAsset } from "./utils/load";
-import { getOracle, getPrice } from "./utils/oracle";
 import {
   handleCollateralAssetInLiqiudationEvent,
   handleCollateralAssetInMintEvent,
   handleCollateralAssetInRedeemEvent,
 } from "./entities/collateralAsset";
+import {
+  handleUserCollateralAssetInLiqiudationEvent,
+  handleUserCollateralAssetInMintEvent,
+  handleUserCollateralAssetInRedeemEvent,
+} from "./entities/userCollateralAsset";
 
 export function handleMint(event: MintEvent): void {
   const entity = new Mint(event.transaction.hash.concatI32(event.logIndex.toI32()));
@@ -32,6 +32,7 @@ export function handleMint(event: MintEvent): void {
   entity.save();
 
   handleCollateralAssetInMintEvent(event);
+  handleUserCollateralAssetInMintEvent(event);
 }
 
 export function handleRedeem(event: RedeemEvent): void {
@@ -51,6 +52,7 @@ export function handleRedeem(event: RedeemEvent): void {
   entity.save();
 
   handleCollateralAssetInRedeemEvent(event);
+  handleUserCollateralAssetInRedeemEvent(event);
 }
 
 export function handleLiqiudation(event: LiqiudationEvent): void {
@@ -69,4 +71,5 @@ export function handleLiqiudation(event: LiqiudationEvent): void {
   entity.save();
 
   handleCollateralAssetInLiqiudationEvent(event);
+  handleUserCollateralAssetInLiqiudationEvent(event);
 }
