@@ -5,7 +5,7 @@ import {
 } from "../../generated/BitUMinting/BitUMinting";
 import { ERC20_DECIMALS_NUMBER } from "../constants";
 import { formatUnits } from "../utils/formatUnits";
-import { loadCollateralAsset, loadCollateralAssetHourData } from "../utils/load";
+import { loadCollateralAsset, loadCollateralAssetDayData, loadCollateralAssetHourData } from "../utils/load";
 import { getOracle, getPrice } from "../utils/oracle";
 
 export function handleCollateralAssetInMintEvent(event: MintEvent): void {
@@ -36,6 +36,7 @@ export function handleCollateralAssetInMintEvent(event: MintEvent): void {
   collateralAsset.save();
 
   loadCollateralAssetHourData(event.block.timestamp, collateralAsset, true);
+  loadCollateralAssetDayData(event.block.timestamp, collateralAsset, true);
 }
 
 export function handleCollateralAssetInRedeemEvent(event: RedeemEvent): void {
@@ -64,6 +65,7 @@ export function handleCollateralAssetInRedeemEvent(event: RedeemEvent): void {
   collateralAsset.save();
 
   loadCollateralAssetHourData(event.block.timestamp, collateralAsset, true);
+  loadCollateralAssetDayData(event.block.timestamp, collateralAsset, true);
 }
 
 export function handleCollateralAssetInLiqiudationEvent(event: LiqiudationEvent): void {
@@ -89,4 +91,5 @@ export function handleCollateralAssetInLiqiudationEvent(event: LiqiudationEvent)
   collateralAsset.save();
 
   loadCollateralAssetHourData(event.block.timestamp, collateralAsset, true);
+  loadCollateralAssetDayData(event.block.timestamp, collateralAsset, true);
 }

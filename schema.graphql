@@ -72,11 +72,23 @@ type CollateralAsset @entity {
 type CollateralAssetHourData @entity {
   # timestamp / 3600
   id: ID!
-
-  tokenAddress: ID!
   
   # date - hour start timestamp
   date: Int!
+
+  tokenAddress: ID!
+
+  collateralAsset: CollateralAsset!
+}
+
+type CollateralAssetDayData @entity {
+  # timestamp / 86400
+  id: ID!
+
+  # date
+  date: Int!
+
+  tokenAddress: ID!
 
   collateralAsset: CollateralAsset!
 }
