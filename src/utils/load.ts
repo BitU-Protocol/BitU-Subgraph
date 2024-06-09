@@ -3,11 +3,15 @@ import {
   CollateralAsset,
   CollateralAssetDayData,
   CollateralAssetHourData,
+  Token,
+  TokenDayData,
+  TokenHourData,
   User,
   UserCollateralAsset,
 } from "../../generated/schema";
-import { getDecimals, getName, getSymbol } from "./token";
+import { getDecimals, getName, getSymbol, getTotalSupply } from "./token";
 import { ADDRESS_ZERO, BIG_DECIMAL_ZERO, BIG_INT_ZERO } from "../constants";
+import { formatUnits } from "./formatUnits";
 
 export function loadCollateralAsset(address: Address): CollateralAsset {
   let assetToken = CollateralAsset.load(address.toHexString());
@@ -128,4 +132,66 @@ export function loadUser(address: Address): User {
   }
 
   return user as User;
+}
+
+export function loadToken(address: Address): Token {
+  let token = Token.load(address.toHexString());
+
+  if (!token) {
+    token = new Token(address.toHexString());
+    token.symbol = getSymbol(address);
+    token.name = getName(address);
+    token.decimals = getDecimals(address);
+    const totalSupply = getTotalSupply(address);
+    token.totalSupply = formatUnits(totalSupply, token.decimals);
+    token.save();
+  }
+
+  return token as Token;
+}
+
+export function loadTokenHourData(timestamp: BigInt, token: Token, update: bool): TokenHourData {
+  const SECONDS_IN_HOUR = BigInt.fromI32(60 * 60);
+  const hourId = timestamp.div(SECONDS_IN_HOUR);
+  const hourStartTimestamp = hourId.times(SECONDS_IN_HOUR);
+  const id = token.id.concat("-").concat(hourStartTimestamp.toString());
+
+  let tokenHourData = TokenHourData.load(id);
+
+  if (!tokenHourData) {
+    tokenHourData = new TokenHourData(id);
+    tokenHourData.date = hourStartTimestamp.toI32();
+    tokenHourData.token = token.id;
+    tokenHourData.save();
+  }
+
+  if (update) {
+    tokenHourData.token = token.id;
+    tokenHourData.save();
+  }
+
+  return tokenHourData as TokenHourData;
+}
+
+export function loadTokenDayData(timestamp: BigInt, token: Token, update: bool): TokenDayData {
+  const SECONDS_IN_DAY = BigInt.fromI32(60 * 60 * 24);
+  const dayId = timestamp.div(SECONDS_IN_DAY);
+  const dayStartTimestamp = dayId.times(SECONDS_IN_DAY);
+  const id = token.id.concat("-").concat(dayStartTimestamp.toString());
+
+  let tokenDayData = TokenDayData.load(id);
+
+  if (!tokenDayData) {
+    tokenDayData = new TokenDayData(id);
+    tokenDayData.date = dayStartTimestamp.toI32();
+    tokenDayData.token = token.id;
+    tokenDayData.save();
+  }
+
+  if (update) {
+    tokenDayData.token = token.id;
+    tokenDayData.save();
+  }
+
+  return tokenDayData as TokenDayData;
 }

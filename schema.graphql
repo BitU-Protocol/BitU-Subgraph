@@ -1,44 +1,3 @@
-type Liqiudation @entity(immutable: true) {
-  id: Bytes!
-  user: Bytes! # address
-  asset: Bytes! # address
-  collateral_amount: BigInt! # uint256
-  bitu_amount: BigInt! # uint256
-  collateral_ratio: BigInt! # uint256
-  timestamp: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Mint @entity(immutable: true) {
-  id: Bytes!
-  minter: Bytes! # address
-  collateral_asset: Bytes! # address
-  collateral_amount: BigInt! # uint256
-  bitu_amount: BigInt! # uint256
-  collateral_ratio: BigInt! # uint256
-  timestamp: BigInt! # uint256
-  mintfee: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Redeem @entity(immutable: true) {
-  id: Bytes!
-  redeemer: Bytes! # address
-  collateral_asset: Bytes! # address
-  collateral_amount: BigInt! # uint256
-  bitu_amount: BigInt! # uint256
-  collateral_ratio: BigInt! # uint256
-  interest: BigInt! # uint256
-  timestamp: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
 type CollateralAsset @entity {
   # asset token address
   id: ID!
@@ -72,7 +31,7 @@ type CollateralAsset @entity {
 type CollateralAssetHourData @entity {
   # timestamp / 3600
   id: ID!
-  
+
   # date - hour start timestamp
   date: Int!
 
@@ -127,4 +86,38 @@ type User @entity {
   id: ID!
 
   collateralAssets: [UserCollateralAsset!]! @derivedFrom(field: "user")
+}
+
+type Token @entity {
+  # token address
+  id: ID!
+
+  # mirrored from the smart contract
+  symbol: String!
+  name: String!
+  decimals: BigInt!
+
+  # token
+  totalSupply: BigDecimal!
+}
+
+
+type TokenHourData @entity {
+  # timestamp / 3600
+  id: ID!
+
+  # date - hour start timestamp
+  date: Int!
+
+  token: Token!
+}
+
+type TokenDayData @entity {
+  # timestamp / 86400
+  id: ID!
+
+  # date
+  date: Int!
+
+  token: Token!
 }

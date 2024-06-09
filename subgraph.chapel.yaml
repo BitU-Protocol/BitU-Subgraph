@@ -5,6 +5,34 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum
+    name: BITU
+    network: chapel
+    source:
+      address: "0x811e7D5D91333502AcA60AF976442EC9139a4C7d"
+      abi: BITU
+      startBlock: 39517163
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Token
+        - TokenHourData
+        - TokenDayData
+      abis:
+        - name: BITU
+          file: ./abis/BITU.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: ./src/bitu.ts
+  - kind: ethereum
     name: BitUMinting
     network: chapel
     source:
