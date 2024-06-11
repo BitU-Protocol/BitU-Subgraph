@@ -1,12 +1,19 @@
+import { log } from "@graphprotocol/graph-ts";
 import { Transfer as TransferEvent } from "../../generated/BITU/BITU";
-import { formatUnits } from "../utils/formatUnits";
 import { loadToken, loadTokenDayData, loadTokenHourData } from "../utils/load";
-import { getTotalSupply } from "../utils/token";
+import { ADDRESS_ZERO } from "../constants";
+import { formatUnits } from "../utils/formatUnits";
 
 export function handleTokenInTransferEvent(event: TransferEvent): void {
   const token = loadToken(event.address);
-  const totalSupply = getTotalSupply(event.address);
-  token.totalSupply = formatUnits(totalSupply, token.decimals);
+
+  if (event.params.from.equals(ADDRESS_ZERO)) {
+    token.totalSupply = token.totalSupply.plus(formatUnits(event.params.value, token.decimals));
+  }
+
+  if (event.params.to.equals(ADDRESS_ZERO)) {
+    token.totalSupply = token.totalSupply.minus(formatUnits(event.params.value, token.decimals));
+  }
   token.save();
 
   loadTokenHourData(event.block.timestamp, token, true);

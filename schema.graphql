@@ -101,7 +101,6 @@ type Token @entity {
   totalSupply: BigDecimal!
 }
 
-
 type TokenHourData @entity {
   # timestamp / 3600
   id: ID!
@@ -120,4 +119,23 @@ type TokenDayData @entity {
   date: Int!
 
   token: Token!
+}
+
+type RewardsReceived @entity {
+  id: Bytes!
+  amount: BigDecimal! # uint256
+  newVestingBITUAmount: BigDecimal! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RewardTotal @entity {
+  id: ID!
+  total: BigDecimal! # uint256
+  lastAmount: BigDecimal! # uint256
+  lastNewVestingBITUAmount: BigDecimal! # uint256
+  lastBlockNumber: BigInt!
+  lastTimestamp: BigInt!
+  lastTransactionHash: Bytes!
 }

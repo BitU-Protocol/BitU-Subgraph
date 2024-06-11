@@ -1,17 +1,17 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 import {
   CollateralAsset,
   CollateralAssetDayData,
   CollateralAssetHourData,
+  RewardTotal,
   Token,
   TokenDayData,
   TokenHourData,
   User,
   UserCollateralAsset,
 } from "../../generated/schema";
-import { getDecimals, getName, getSymbol, getTotalSupply } from "./token";
-import { ADDRESS_ZERO, BIG_DECIMAL_ZERO, BIG_INT_ZERO } from "../constants";
-import { formatUnits } from "./formatUnits";
+import { getDecimals, getName, getSymbol } from "./token";
+import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO } from "../constants";
 
 export function loadCollateralAsset(address: Address): CollateralAsset {
   let assetToken = CollateralAsset.load(address.toHexString());
@@ -117,7 +117,11 @@ export function loadUserCollateralAsset(user: Address, token: Address): UserColl
     userAssetToken.tokenAddress = token.toHexString();
     userAssetToken.user = user.toHexString();
 
+    const collateralAsset = loadCollateralAsset(token);
+    collateralAsset.userCount.plus(BIG_INT_ONE);
+
     userAssetToken.save();
+    collateralAsset.save();
   }
 
   return userAssetToken as UserCollateralAsset;
@@ -142,8 +146,7 @@ export function loadToken(address: Address): Token {
     token.symbol = getSymbol(address);
     token.name = getName(address);
     token.decimals = getDecimals(address);
-    const totalSupply = getTotalSupply(address);
-    token.totalSupply = formatUnits(totalSupply, token.decimals);
+    token.totalSupply = BIG_DECIMAL_ZERO;
     token.save();
   }
 
@@ -194,4 +197,21 @@ export function loadTokenDayData(timestamp: BigInt, token: Token, update: bool):
   }
 
   return tokenDayData as TokenDayData;
+}
+
+export function loadReward(id: string): RewardTotal {
+  let rewardTotal = RewardTotal.load(id);
+
+  if (!rewardTotal) {
+    rewardTotal = new RewardTotal(id);
+    rewardTotal.total = BIG_DECIMAL_ZERO;
+    rewardTotal.lastAmount = BIG_DECIMAL_ZERO;
+    rewardTotal.lastNewVestingBITUAmount = BIG_DECIMAL_ZERO;
+    rewardTotal.lastBlockNumber = BIG_INT_ZERO;
+    rewardTotal.lastTimestamp = BIG_INT_ZERO;
+    rewardTotal.lastTransactionHash = Bytes.fromI32(0);
+    rewardTotal.save();
+  }
+
+  return rewardTotal as RewardTotal;
 }

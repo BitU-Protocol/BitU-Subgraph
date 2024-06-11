@@ -69,3 +69,23 @@ dataSources:
             uint256,uint256,uint256)
           handler: handleLiqiudation
       file: ./src/minting.ts
+  - kind: ethereum
+    name: BitUStaking
+    network: chapel
+    source:
+      address: "0x23dD788778D870DEecdB963D9C28eA791CA94096"
+      abi: BitUStaking
+      startBlock: 39517193
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Rewards
+      abis:
+        - name: BitUStaking
+          file: ./abis/BitUStaking.json
+      eventHandlers:
+        - event: RewardsReceived(indexed uint256,uint256)
+          handler: handleRewardsReceived
+      file: ./src/sbitu.ts
