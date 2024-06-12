@@ -1,14 +1,12 @@
-import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
+import { Address, Bytes } from "@graphprotocol/graph-ts";
 import {
   CollateralAsset,
-  CollateralAssetDayData,
-  CollateralAssetHourData,
   RewardTotal,
   Token,
-  TokenDayData,
-  TokenHourData,
   User,
   UserCollateralAsset,
+  TokenHolder,
+  Holder,
 } from "../../generated/schema";
 import { getDecimals, getName, getSymbol } from "./token";
 import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO } from "../constants";
@@ -38,64 +36,6 @@ export function loadCollateralAsset(address: Address): CollateralAsset {
   return assetToken as CollateralAsset;
 }
 
-export function loadCollateralAssetHourData(
-  timestamp: BigInt,
-  collateralAsset: CollateralAsset,
-  update: bool
-): CollateralAssetHourData {
-  const SECONDS_IN_HOUR = BigInt.fromI32(60 * 60);
-  const hourId = timestamp.div(SECONDS_IN_HOUR);
-  const hourStartTimestamp = hourId.times(SECONDS_IN_HOUR);
-  const id = collateralAsset.id.concat("-").concat(hourStartTimestamp.toString());
-
-  let assetTokenHourData = CollateralAssetHourData.load(id);
-
-  if (!assetTokenHourData) {
-    assetTokenHourData = new CollateralAssetHourData(id);
-    assetTokenHourData.date = hourStartTimestamp.toI32();
-    assetTokenHourData.tokenAddress = collateralAsset.id;
-    assetTokenHourData.collateralAsset = collateralAsset.id;
-    assetTokenHourData.save();
-  }
-
-  if (update) {
-    assetTokenHourData.tokenAddress = collateralAsset.id;
-    assetTokenHourData.collateralAsset = collateralAsset.id;
-    assetTokenHourData.save();
-  }
-
-  return assetTokenHourData as CollateralAssetHourData;
-}
-
-export function loadCollateralAssetDayData(
-  timestamp: BigInt,
-  collateralAsset: CollateralAsset,
-  update: bool
-): CollateralAssetDayData {
-  const SECONDS_IN_DAY = BigInt.fromI32(60 * 60 * 24);
-  const dayId = timestamp.div(SECONDS_IN_DAY);
-  const dayStartTimestamp = dayId.times(SECONDS_IN_DAY);
-  const id = collateralAsset.id.concat("-").concat(dayStartTimestamp.toString());
-
-  let assetTokenHourData = CollateralAssetDayData.load(id);
-
-  if (!assetTokenHourData) {
-    assetTokenHourData = new CollateralAssetDayData(id);
-    assetTokenHourData.date = dayStartTimestamp.toI32();
-    assetTokenHourData.tokenAddress = collateralAsset.id;
-    assetTokenHourData.collateralAsset = collateralAsset.id;
-    assetTokenHourData.save();
-  }
-
-  if (update) {
-    assetTokenHourData.tokenAddress = collateralAsset.id;
-    assetTokenHourData.collateralAsset = collateralAsset.id;
-    assetTokenHourData.save();
-  }
-
-  return assetTokenHourData as CollateralAssetDayData;
-}
-
 export function loadUserCollateralAsset(user: Address, token: Address): UserCollateralAsset {
   const id = user.toHexString().concat("-").concat(token.toHexString());
   let userAssetToken = UserCollateralAsset.load(id);
@@ -118,7 +58,7 @@ export function loadUserCollateralAsset(user: Address, token: Address): UserColl
     userAssetToken.user = user.toHexString();
 
     const collateralAsset = loadCollateralAsset(token);
-    collateralAsset.userCount.plus(BIG_INT_ONE);
+    collateralAsset.userCount = collateralAsset.userCount.plus(BIG_INT_ONE);
 
     userAssetToken.save();
     collateralAsset.save();
@@ -138,67 +78,6 @@ export function loadUser(address: Address): User {
   return user as User;
 }
 
-export function loadToken(address: Address): Token {
-  let token = Token.load(address.toHexString());
-
-  if (!token) {
-    token = new Token(address.toHexString());
-    token.symbol = getSymbol(address);
-    token.name = getName(address);
-    token.decimals = getDecimals(address);
-    token.totalSupply = BIG_DECIMAL_ZERO;
-    token.save();
-  }
-
-  return token as Token;
-}
-
-export function loadTokenHourData(timestamp: BigInt, token: Token, update: bool): TokenHourData {
-  const SECONDS_IN_HOUR = BigInt.fromI32(60 * 60);
-  const hourId = timestamp.div(SECONDS_IN_HOUR);
-  const hourStartTimestamp = hourId.times(SECONDS_IN_HOUR);
-  const id = token.id.concat("-").concat(hourStartTimestamp.toString());
-
-  let tokenHourData = TokenHourData.load(id);
-
-  if (!tokenHourData) {
-    tokenHourData = new TokenHourData(id);
-    tokenHourData.date = hourStartTimestamp.toI32();
-    tokenHourData.token = token.id;
-    tokenHourData.save();
-  }
-
-  if (update) {
-    tokenHourData.token = token.id;
-    tokenHourData.save();
-  }
-
-  return tokenHourData as TokenHourData;
-}
-
-export function loadTokenDayData(timestamp: BigInt, token: Token, update: bool): TokenDayData {
-  const SECONDS_IN_DAY = BigInt.fromI32(60 * 60 * 24);
-  const dayId = timestamp.div(SECONDS_IN_DAY);
-  const dayStartTimestamp = dayId.times(SECONDS_IN_DAY);
-  const id = token.id.concat("-").concat(dayStartTimestamp.toString());
-
-  let tokenDayData = TokenDayData.load(id);
-
-  if (!tokenDayData) {
-    tokenDayData = new TokenDayData(id);
-    tokenDayData.date = dayStartTimestamp.toI32();
-    tokenDayData.token = token.id;
-    tokenDayData.save();
-  }
-
-  if (update) {
-    tokenDayData.token = token.id;
-    tokenDayData.save();
-  }
-
-  return tokenDayData as TokenDayData;
-}
-
 export function loadReward(id: string): RewardTotal {
   let rewardTotal = RewardTotal.load(id);
 
@@ -214,4 +93,54 @@ export function loadReward(id: string): RewardTotal {
   }
 
   return rewardTotal as RewardTotal;
+}
+
+export function loadToken(address: Address): Token {
+  let token = Token.load(address.toHexString());
+
+  if (!token) {
+    token = new Token(address.toHexString());
+    token.symbol = getSymbol(address);
+    token.name = getName(address);
+    token.decimals = getDecimals(address);
+    token.totalSupply = BIG_DECIMAL_ZERO;
+    token.holderCount = BIG_INT_ZERO;
+    token.save();
+  }
+
+  return token as Token;
+}
+
+export function loadTokenHolder(holder: Address, tokenAddress: Address): TokenHolder {
+  const id = holder.toHexString().concat("-").concat(tokenAddress.toHexString());
+  let tokenHolder = TokenHolder.load(id);
+
+  if (!tokenHolder) {
+    tokenHolder = new TokenHolder(id);
+    tokenHolder.symbol = getSymbol(tokenAddress);
+    tokenHolder.name = getName(tokenAddress);
+    tokenHolder.decimals = getDecimals(tokenAddress);
+    tokenHolder.balance = BIG_DECIMAL_ZERO;
+    tokenHolder.tokenAddress = tokenAddress.toHexString();
+    tokenHolder.holder = holder.toHexString();
+
+    const token = loadToken(tokenAddress);
+    token.holderCount = token.holderCount.plus(BIG_INT_ONE);
+
+    token.save();
+    tokenHolder.save();
+  }
+
+  return tokenHolder as TokenHolder;
+}
+
+export function loadHolder(address: Address): Holder {
+  let holder = Holder.load(address.toHexString());
+
+  if (!holder) {
+    holder = new Holder(address.toHexString());
+    holder.save();
+  }
+
+  return holder as Holder;
 }

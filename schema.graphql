@@ -1,3 +1,4 @@
+# Minting Contract
 type CollateralAsset @entity {
   # asset token address
   id: ID!
@@ -24,32 +25,6 @@ type CollateralAsset @entity {
 
   # User count
   userCount: BigInt!
-
-  hourData: [CollateralAssetHourData!]! @derivedFrom(field: "collateralAsset")
-}
-
-type CollateralAssetHourData @entity {
-  # timestamp / 3600
-  id: ID!
-
-  # date - hour start timestamp
-  date: Int!
-
-  tokenAddress: ID!
-
-  collateralAsset: CollateralAsset!
-}
-
-type CollateralAssetDayData @entity {
-  # timestamp / 86400
-  id: ID!
-
-  # date
-  date: Int!
-
-  tokenAddress: ID!
-
-  collateralAsset: CollateralAsset!
 }
 
 type UserCollateralAsset @entity {
@@ -77,7 +52,7 @@ type UserCollateralAsset @entity {
 
   collateralRatio: BigDecimal!
 
-  # User count
+  # User
   user: User!
 }
 
@@ -88,39 +63,7 @@ type User @entity {
   collateralAssets: [UserCollateralAsset!]! @derivedFrom(field: "user")
 }
 
-type Token @entity {
-  # token address
-  id: ID!
-
-  # mirrored from the smart contract
-  symbol: String!
-  name: String!
-  decimals: BigInt!
-
-  # token
-  totalSupply: BigDecimal!
-}
-
-type TokenHourData @entity {
-  # timestamp / 3600
-  id: ID!
-
-  # date - hour start timestamp
-  date: Int!
-
-  token: Token!
-}
-
-type TokenDayData @entity {
-  # timestamp / 86400
-  id: ID!
-
-  # date
-  date: Int!
-
-  token: Token!
-}
-
+# Staking Contract
 type RewardsReceived @entity {
   id: Bytes!
   amount: BigDecimal! # uint256
@@ -138,4 +81,42 @@ type RewardTotal @entity {
   lastBlockNumber: BigInt!
   lastTimestamp: BigInt!
   lastTransactionHash: Bytes!
+}
+
+# BITU & SBITU
+type Token @entity {
+  # token address
+  id: ID!
+
+  # mirrored from the smart contract
+  symbol: String!
+  name: String!
+  decimals: BigInt!
+
+  # token
+  totalSupply: BigDecimal!
+
+  holderCount: BigInt!
+}
+
+type TokenHolder @entity {
+  # token address
+  id: ID!
+
+  # mirrored from the smart contract
+  tokenAddress: ID!
+  symbol: String!
+  name: String!
+  decimals: BigInt!
+
+  balance: BigDecimal!
+  # User
+  holder: Holder!
+}
+
+type Holder @entity {
+  # Address
+  id: ID!
+
+  tokens: [TokenHolder!]! @derivedFrom(field: "holder")
 }

@@ -1,8 +1,10 @@
 import { RewardsReceived } from "../generated/schema";
 import { RewardsReceived as RewardsReceivedEvent } from "../generated/BitUStaking/BitUStaking";
+import { Transfer as TransferEvent } from "../generated/BITU/ERC20";
 import { formatUnits } from "./utils/formatUnits";
 import { ERC20_DECIMALS_NUMBER } from "./constants";
 import { loadReward } from "./utils/load";
+import { handleTokenHolderInTransferEvent, handleTokenInTransferEvent } from "./entities/token";
 
 export function handleRewardsReceived(event: RewardsReceivedEvent): void {
   let entity = new RewardsReceived(event.transaction.hash.concatI32(event.logIndex.toI32()));
@@ -24,4 +26,9 @@ export function handleRewardsReceived(event: RewardsReceivedEvent): void {
   rewardTotal.lastTransactionHash = event.transaction.hash;
 
   rewardTotal.save();
+}
+
+export function handleTransfer(event: TransferEvent): void {
+  handleTokenInTransferEvent(event);
+  handleTokenHolderInTransferEvent(event);
 }

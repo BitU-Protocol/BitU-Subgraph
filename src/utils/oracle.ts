@@ -24,8 +24,6 @@ export function getPrice(address: Address): BigDecimal {
     );
   }
 
-  log.debug("[Oracle Price] {} {}", [address.toHexString(), priceValue.toString()]);
-
   return priceValue;
 }
 
@@ -37,6 +35,5 @@ export function getOracle(address: Address): Address {
   if (!oracleInfo.reverted) {
     oracleValue = oracleInfo.value;
   }
-  log.debug("[Oracle] {}", [oracleValue.toHexString()]);
   return oracleValue;
 }

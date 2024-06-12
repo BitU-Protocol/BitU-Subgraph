@@ -17,8 +17,8 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Token
-        - TokenHourData
-        - TokenDayData
+        - TokenHolder
+        - Holder
       abis:
         - name: BITU
           file: ./abis/BITU.json
@@ -44,9 +44,9 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - Liqiudation
-        - Mint
-        - Redeem
+        - CollateralAsset
+        - UserCollateralAsset
+        - User
       abis:
         - name: BitUMinting
           file: ./abis/BitUMinting.json
@@ -81,11 +81,23 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - Rewards
+        - RewardsReceived
+        - RewardTotal
+        - Token
+        - TokenHolder
+        - Holder
       abis:
         - name: BitUStaking
           file: ./abis/BitUStaking.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
       eventHandlers:
         - event: RewardsReceived(indexed uint256,uint256)
           handler: handleRewardsReceived
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
       file: ./src/sbitu.ts
