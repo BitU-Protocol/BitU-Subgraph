@@ -29,7 +29,7 @@ type CollateralAsset @entity {
 }
 
 type UserCollateralAsset @entity {
-  # `user:token`
+  # `user-token`
   id: ID!
 
   tokenAddress: ID!
