@@ -20,7 +20,7 @@ export function handleCollateralAssetInMintEvent(event: MintEvent): void {
     formatUnits(event.params.collateral_amount, collateralAsset.decimals)
   );
 
-  const totalValueLockedUSD = totalValueLocked.times(price).plus(collateralAsset.liquidatedUSD);
+  const totalValueLockedUSD = totalValueLocked.times(price);
 
   const fees = collateralAsset.fees.plus(formatUnits(event.params.mintfee, collateralAsset.decimals));
   const feesUSD = fees.times(price);
@@ -48,7 +48,7 @@ export function handleCollateralAssetInRedeemEvent(event: RedeemEvent): void {
     formatUnits(event.params.collateral_amount, collateralAsset.decimals)
   );
 
-  const totalValueLockedUSD = totalValueLocked.times(price).plus(collateralAsset.liquidatedUSD);
+  const totalValueLockedUSD = totalValueLocked.times(price);
 
   const bituMinted = collateralAsset.bituMinted.minus(formatUnits(event.params.bitu_amount, ERC20_DECIMALS_NUMBER));
 
@@ -70,18 +70,21 @@ export function handleCollateralAssetInLiqiudationEvent(event: LiqiudationEvent)
 
   const price = getPrice(oracle);
 
-  const currentLiquidated = formatUnits(event.params.collateral_amount, collateralAsset.decimals);
-  const liquidatedUSD = collateralAsset.liquidatedUSD.plus(currentLiquidated.times(price));
+  const currentAssetLiquidated = formatUnits(event.params.collateral_amount, collateralAsset.decimals);
+  const assetLiquidatedUSD = collateralAsset.assetLiquidatedUSD.plus(currentAssetLiquidated.times(price));
 
-  const totalValueLocked = collateralAsset.totalValueLocked.minus(currentLiquidated);
+  const totalValueLocked = collateralAsset.totalValueLocked.minus(currentAssetLiquidated);
 
-  const totalValueLockedUSD = totalValueLocked.times(price).plus(liquidatedUSD);
+  const totalValueLockedUSD = totalValueLocked.times(price);
 
   collateralAsset.totalValueLocked = totalValueLocked;
   collateralAsset.totalValueLockedUSD = totalValueLockedUSD;
   collateralAsset.collateralRatio = safeDiv(totalValueLockedUSD, collateralAsset.bituMinted);
-  collateralAsset.liquidated = collateralAsset.liquidated.plus(currentLiquidated);
-  collateralAsset.liquidatedUSD = liquidatedUSD;
+  collateralAsset.assetLiquidated = collateralAsset.assetLiquidated.plus(currentAssetLiquidated);
+  collateralAsset.assetLiquidatedUSD = assetLiquidatedUSD;
+  collateralAsset.bituLiquidated = collateralAsset.bituLiquidated.plus(
+    formatUnits(event.params.bitu_amount, ERC20_DECIMALS_NUMBER)
+  );
 
   collateralAsset.save();
 }

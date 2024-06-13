@@ -26,8 +26,9 @@ export function loadCollateralAsset(address: Address): CollateralAsset {
     assetToken.bituMinted = BIG_DECIMAL_ZERO;
     assetToken.bituBurned = BIG_DECIMAL_ZERO;
     assetToken.collateralRatio = BIG_DECIMAL_ZERO;
-    assetToken.liquidated = BIG_DECIMAL_ZERO;
-    assetToken.liquidatedUSD = BIG_DECIMAL_ZERO;
+    assetToken.assetLiquidated = BIG_DECIMAL_ZERO;
+    assetToken.assetLiquidatedUSD = BIG_DECIMAL_ZERO;
+    assetToken.bituLiquidated = BIG_DECIMAL_ZERO;
     assetToken.userCount = BIG_INT_ZERO;
 
     assetToken.save();
@@ -52,8 +53,9 @@ export function loadUserCollateralAsset(user: Address, token: Address): UserColl
     userAssetToken.bituMinted = BIG_DECIMAL_ZERO;
     userAssetToken.bituBurned = BIG_DECIMAL_ZERO;
     userAssetToken.collateralRatio = BIG_DECIMAL_ZERO;
-    userAssetToken.liquidated = BIG_DECIMAL_ZERO;
-    userAssetToken.liquidatedUSD = BIG_DECIMAL_ZERO;
+    userAssetToken.assetLiquidated = BIG_DECIMAL_ZERO;
+    userAssetToken.assetLiquidatedUSD = BIG_DECIMAL_ZERO;
+    userAssetToken.bituLiquidated = BIG_DECIMAL_ZERO;
     userAssetToken.tokenAddress = token.toHexString();
     userAssetToken.user = user.toHexString();
 

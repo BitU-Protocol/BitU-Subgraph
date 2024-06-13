@@ -21,7 +21,7 @@ export function handleUserCollateralAssetInMintEvent(event: MintEvent): void {
     formatUnits(event.params.collateral_amount, userCollateralAsset.decimals)
   );
 
-  const totalValueLockedUSD = totalValueLocked.times(price).plus(userCollateralAsset.liquidatedUSD);
+  const totalValueLockedUSD = totalValueLocked.times(price);
 
   const fees = userCollateralAsset.fees.plus(formatUnits(event.params.mintfee, userCollateralAsset.decimals));
   const feesUSD = fees.times(price);
@@ -51,7 +51,7 @@ export function handleUserCollateralAssetInRedeemEvent(event: RedeemEvent): void
     formatUnits(event.params.collateral_amount, userCollateralAsset.decimals)
   );
 
-  const totalValueLockedUSD = totalValueLocked.times(price).plus(userCollateralAsset.liquidatedUSD);
+  const totalValueLockedUSD = totalValueLocked.times(price);
 
   const bituMinted = userCollateralAsset.bituMinted.minus(formatUnits(event.params.bitu_amount, ERC20_DECIMALS_NUMBER));
 
@@ -75,18 +75,21 @@ export function handleUserCollateralAssetInLiqiudationEvent(event: LiqiudationEv
 
   const price = getPrice(oracle);
 
-  const currentLiquidated = formatUnits(event.params.collateral_amount, userCollateralAsset.decimals);
-  const liquidatedUSD = userCollateralAsset.liquidatedUSD.plus(currentLiquidated.times(price));
+  const currentAssetLiquidated = formatUnits(event.params.collateral_amount, userCollateralAsset.decimals);
+  const assetLiquidatedUSD = userCollateralAsset.assetLiquidatedUSD.plus(currentAssetLiquidated.times(price));
 
-  const totalValueLocked = userCollateralAsset.totalValueLocked.minus(currentLiquidated);
+  const totalValueLocked = userCollateralAsset.totalValueLocked.minus(currentAssetLiquidated);
 
-  const totalValueLockedUSD = totalValueLocked.times(price).plus(liquidatedUSD);
+  const totalValueLockedUSD = totalValueLocked.times(price);
 
   userCollateralAsset.totalValueLocked = totalValueLocked;
   userCollateralAsset.totalValueLockedUSD = totalValueLockedUSD;
   userCollateralAsset.collateralRatio = safeDiv(totalValueLockedUSD, userCollateralAsset.bituMinted);
-  userCollateralAsset.liquidated = userCollateralAsset.liquidated.plus(currentLiquidated);
-  userCollateralAsset.liquidatedUSD = liquidatedUSD;
+  userCollateralAsset.assetLiquidated = userCollateralAsset.assetLiquidated.plus(currentAssetLiquidated);
+  userCollateralAsset.assetLiquidatedUSD = assetLiquidatedUSD;
+  userCollateralAsset.bituLiquidated = userCollateralAsset.bituLiquidated.plus(
+    formatUnits(event.params.bitu_amount, ERC20_DECIMALS_NUMBER)
+  );
   userCollateralAsset.user = user.id;
 
   userCollateralAsset.save();

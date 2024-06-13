@@ -15,8 +15,9 @@ type CollateralAsset @entity {
   bituMinted: BigDecimal!
   bituBurned: BigDecimal!
 
-  liquidated: BigDecimal!
-  liquidatedUSD: BigDecimal!
+  assetLiquidated: BigDecimal!
+  assetLiquidatedUSD: BigDecimal!
+  bituLiquidated: BigDecimal!
 
   fees: BigDecimal!
   feesUSD: BigDecimal!
@@ -44,8 +45,9 @@ type UserCollateralAsset @entity {
   bituMinted: BigDecimal!
   bituBurned: BigDecimal!
 
-  liquidated: BigDecimal!
-  liquidatedUSD: BigDecimal!
+  assetLiquidated: BigDecimal!
+  assetLiquidatedUSD: BigDecimal!
+  bituLiquidated: BigDecimal!
 
   fees: BigDecimal!
   feesUSD: BigDecimal!
