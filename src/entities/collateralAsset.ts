@@ -1,3 +1,4 @@
+import { log } from "@graphprotocol/graph-ts";
 import {
   Liqiudation as LiqiudationEvent,
   Mint as MintEvent,
@@ -15,6 +16,8 @@ export function handleCollateralAssetInMintEvent(event: MintEvent): void {
   const oracle = getOracle(event.params.collateral_asset);
 
   const price = getPrice(oracle);
+
+  log.info("[MintEvent] {} {}", [collateralAsset.symbol, price.toString()]);
 
   const totalValueLocked = collateralAsset.totalValueLocked.plus(
     formatUnits(event.params.collateral_amount, collateralAsset.decimals)
@@ -44,6 +47,8 @@ export function handleCollateralAssetInRedeemEvent(event: RedeemEvent): void {
 
   const price = getPrice(oracle);
 
+  log.info("[RedeemEvent] {} {}", [collateralAsset.symbol, price.toString()]);
+
   const totalValueLocked = collateralAsset.totalValueLocked.minus(
     formatUnits(event.params.collateral_amount, collateralAsset.decimals)
   );
@@ -69,6 +74,8 @@ export function handleCollateralAssetInLiqiudationEvent(event: LiqiudationEvent)
   const oracle = getOracle(event.params.asset);
 
   const price = getPrice(oracle);
+
+  log.info("[LiqiudationEvent] {} {}", [collateralAsset.symbol, price.toString()]);
 
   const currentAssetLiquidated = formatUnits(event.params.collateral_amount, collateralAsset.decimals);
   const assetLiquidatedUSD = collateralAsset.assetLiquidatedUSD.plus(currentAssetLiquidated.times(price));
