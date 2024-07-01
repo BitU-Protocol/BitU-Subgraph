@@ -7,6 +7,9 @@ import {
   UserCollateralAsset,
   TokenHolder,
   Holder,
+  LockedToken,
+  UserLockedToken,
+  UserLocked,
 } from "../../generated/schema";
 import { getDecimals, getName, getSymbol } from "./token";
 import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO } from "../constants";
@@ -145,4 +148,55 @@ export function loadHolder(address: Address): Holder {
   }
 
   return holder as Holder;
+}
+
+//  locked
+export function loadLockedToken(address: Address): LockedToken {
+  let lockedToken = LockedToken.load(address.toHexString());
+
+  if (!lockedToken) {
+    lockedToken = new LockedToken(address.toHexString());
+    lockedToken.symbol = getSymbol(address);
+    lockedToken.name = getName(address);
+    lockedToken.decimals = getDecimals(address);
+    lockedToken.lockedTotal = BIG_DECIMAL_ZERO;
+    lockedToken.userCount = BIG_INT_ZERO;
+    lockedToken.save();
+  }
+
+  return lockedToken as LockedToken;
+}
+
+export function loadUserLockedToken(userAddress: Address, tokenAddress: Address): UserLockedToken {
+  const id = userAddress.toHexString().concat("-").concat(tokenAddress.toHexString());
+  let userLockedToken = UserLockedToken.load(id);
+
+  if (!userLockedToken) {
+    userLockedToken = new UserLockedToken(id);
+    userLockedToken.tokenAddress = tokenAddress.toHexString();
+    userLockedToken.symbol = getSymbol(tokenAddress);
+    userLockedToken.name = getName(tokenAddress);
+    userLockedToken.decimals = getDecimals(tokenAddress);
+    userLockedToken.lockedAmount = BIG_DECIMAL_ZERO;
+    userLockedToken.user = userAddress.toHexString();
+
+    const lockedToken = loadLockedToken(tokenAddress);
+    lockedToken.userCount = lockedToken.userCount.plus(BIG_INT_ONE);
+
+    lockedToken.save();
+    userLockedToken.save();
+  }
+
+  return userLockedToken as UserLockedToken;
+}
+
+export function loadUserLocked(address: Address): UserLocked {
+  let userLocked = UserLocked.load(address.toHexString());
+
+  if (!userLocked) {
+    userLocked = new UserLocked(address.toHexString());
+    userLocked.save();
+  }
+
+  return userLocked as UserLocked;
 }

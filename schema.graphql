@@ -102,7 +102,7 @@ type Token @entity {
 }
 
 type TokenHolder @entity {
-  # token address
+  # `user-token`
   id: ID!
 
   # mirrored from the smart contract
@@ -121,4 +121,43 @@ type Holder @entity {
   id: ID!
 
   tokens: [TokenHolder!]! @derivedFrom(field: "holder")
+}
+
+# locking contract
+
+type LockedToken @entity {
+  # token address
+  id: ID!
+
+  # mirrored from the smart contract
+  symbol: String!
+  name: String!
+  decimals: BigInt!
+
+  # token
+  lockedTotal: BigDecimal!
+
+  userCount: BigInt!
+}
+
+type UserLockedToken @entity {
+  # `user-token`
+  id: ID!
+
+  # mirrored from the smart contract
+  tokenAddress: ID!
+  symbol: String!
+  name: String!
+  decimals: BigInt!
+
+  lockedAmount: BigDecimal!
+  # User
+  user: UserLocked!
+}
+
+type UserLocked @entity {
+  # Address
+  id: ID!
+
+  lockedTokens: [UserLockedToken!]! @derivedFrom(field: "user")
 }

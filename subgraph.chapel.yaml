@@ -101,3 +101,33 @@ dataSources:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
       file: ./src/sbitu.ts
+  - kind: ethereum
+    name: BitULocking
+    network: chapel
+    source:
+      address: "0x72bA568794384F053593DcA0C437c0af10cCD82e"
+      abi: BitULocking
+      startBlock: 39896029
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - LockedToken
+        - UserLockedToken
+        - UserLocked
+      abis:
+        - name: BitULocking
+          file: ./abis/BitULocking.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
+      eventHandlers:
+        - event: Stake(indexed address,indexed address,uint256)
+          handler: handleStake
+        - event: Unstake(indexed address,indexed address,uint256)
+          handler: handleUnstake
+      file: ./src/locking.ts
