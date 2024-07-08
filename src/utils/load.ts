@@ -9,7 +9,7 @@ import {
   Holder,
 } from "../../generated/schema";
 import { getDecimals, getName, getSymbol } from "./token";
-import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO } from "../constants";
+import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, INITIALIZE_REWARD_TIMESTAMP } from "../constants";
 
 export function loadCollateralAsset(address: Address): CollateralAsset {
   let assetToken = CollateralAsset.load(address.toHexString());
@@ -80,16 +80,17 @@ export function loadUser(address: Address): User {
   return user as User;
 }
 
-export function loadReward(id: string): RewardTotal {
+export function loadRewardTotal(id: string): RewardTotal {
   let rewardTotal = RewardTotal.load(id);
 
   if (!rewardTotal) {
     rewardTotal = new RewardTotal(id);
     rewardTotal.total = BIG_DECIMAL_ZERO;
+    rewardTotal.dyr = BIG_DECIMAL_ZERO;
     rewardTotal.lastAmount = BIG_DECIMAL_ZERO;
     rewardTotal.lastNewVestingBITUAmount = BIG_DECIMAL_ZERO;
     rewardTotal.lastBlockNumber = BIG_INT_ZERO;
-    rewardTotal.lastTimestamp = BIG_INT_ZERO;
+    rewardTotal.lastTimestamp = INITIALIZE_REWARD_TIMESTAMP;
     rewardTotal.lastTransactionHash = Bytes.fromI32(0);
     rewardTotal.save();
   }

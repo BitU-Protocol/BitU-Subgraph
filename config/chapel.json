@@ -1,5 +1,6 @@
 {
   "bitu_minting_address": "0xa0B009bb7B1516A7C7e3B3F2783B83fA33cDb48b",
   "bitu_address": "0x811e7D5D91333502AcA60AF976442EC9139a4C7d",
-  "sbitu_address": "0x23dD788778D870DEecdB963D9C28eA791CA94096"
+  "sbitu_address": "0x23dD788778D870DEecdB963D9C28eA791CA94096",
+  "initialize_reward_timestamp": "1712678400"
 }

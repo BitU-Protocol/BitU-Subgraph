@@ -78,6 +78,7 @@ type RewardsReceived @entity {
 type RewardTotal @entity {
   id: ID!
   total: BigDecimal! # uint256
+  dyr: BigDecimal! # uint256
   lastAmount: BigDecimal! # uint256
   lastNewVestingBITUAmount: BigDecimal! # uint256
   lastBlockNumber: BigInt!

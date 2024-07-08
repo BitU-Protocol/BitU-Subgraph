@@ -24,3 +24,5 @@ export const DEFAULT_MINT_FEE = BigDecimal.fromString("0.0015");
 export const BITU_MINTING_ADDRESS = Address.fromString("{{ bitu_minting_address }}");
 export const BITU_ADDRESS = Address.fromString("{{ bitu_address }}");
 export const SBITU_ADDRESS = Address.fromString("{{ sbitu_address }}");
+
+export const INITIALIZE_REWARD_TIMESTAMP = BigInt.fromString("{{ initialize_reward_timestamp }}");
