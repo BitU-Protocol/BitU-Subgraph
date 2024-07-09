@@ -21,8 +21,8 @@ export const ERC20_DECIMALS_NUMBER = BigInt.fromI32(18);
 
 export const DEFAULT_MINT_FEE = BigDecimal.fromString("0.0015");
 
-export const BITU_MINTING_ADDRESS = Address.fromString("0xa0B009bb7B1516A7C7e3B3F2783B83fA33cDb48b");
-export const BITU_ADDRESS = Address.fromString("0x811e7D5D91333502AcA60AF976442EC9139a4C7d");
-export const SBITU_ADDRESS = Address.fromString("0x23dD788778D870DEecdB963D9C28eA791CA94096");
+export const BITU_MINTING_ADDRESS = Address.fromString("0xa581B5b3D007DAB450943749E29a677A0D116F18");
+export const BITU_ADDRESS = Address.fromString("0x654A32542A84bEA7D2c2C1A1Ed1AAAf26888E6bD");
+export const SBITU_ADDRESS = Address.fromString("0x61183a27ab5FDaCC4D46F5aF9Eb9E6A93afd76d4");
 
-export const INITIALIZE_REWARD_TIMESTAMP = BigInt.fromString("1712678400");
+export const INITIALIZE_REWARD_TIMESTAMP = BigInt.fromString("1717948800");
