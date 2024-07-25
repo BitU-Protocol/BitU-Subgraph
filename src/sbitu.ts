@@ -64,7 +64,7 @@ export function handleRewardsReceived(event: RewardsReceivedEvent): void {
     const dyr = safeDiv(entity.amount, totalAssets.times(days.toBigDecimal()));
 
     log.info(
-      "[equals] formattedCurrentTimestamp {} {}, formattedLastTimestamp {} {}, formattedPreviousDateTimestamp {} {}, days {}, dyr {}, TotalAssets {}",
+      "[not equals] formattedCurrentTimestamp {} {}, formattedLastTimestamp {} {}, formattedPreviousDateTimestamp {} {}, days {}, dyr {}, TotalAssets {}",
       [
         event.block.timestamp.toString(),
         formattedCurrentTimestamp.toString(),
