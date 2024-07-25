@@ -25,4 +25,4 @@ export const BITU_MINTING_ADDRESS = Address.fromString("0xa581B5b3D007DAB4509437
 export const BITU_ADDRESS = Address.fromString("0x654A32542A84bEA7D2c2C1A1Ed1AAAf26888E6bD");
 export const SBITU_ADDRESS = Address.fromString("0x61183a27ab5FDaCC4D46F5aF9Eb9E6A93afd76d4");
 
-export const INITIALIZE_REWARD_TIMESTAMP = BigInt.fromString("1717948800");
+export const INITIALIZE_REWARD_TIMESTAMP = BigInt.fromString("1721606400");
