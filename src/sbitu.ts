@@ -23,24 +23,72 @@ export function handleRewardsReceived(event: RewardsReceivedEvent): void {
   let rewardTotal = loadRewardTotal("BITU");
   const totalAssets = getTotalAssets();
   const SECONDS_IN_DAY = BigInt.fromI32(60 * 60 * 24);
-  const mod = event.block.timestamp.minus(rewardTotal.lastTimestamp).mod(SECONDS_IN_DAY);
-  const days = event.block.timestamp
-    .minus(rewardTotal.lastTimestamp)
-    .minus(mod)
-    .plus(mod.isZero() ? BIG_INT_ZERO : SECONDS_IN_DAY)
-    .div(SECONDS_IN_DAY);
+  const formattedCurrentTimestamp = event.block.timestamp.minus(event.block.timestamp.mod(SECONDS_IN_DAY));
+  const formattedLastTimestamp = rewardTotal.lastTimestamp.minus(rewardTotal.lastTimestamp.mod(SECONDS_IN_DAY));
+  const formattedPreviousDateTimestamp = rewardTotal.previousDateTimestamp.minus(
+    rewardTotal.previousDateTimestamp.mod(SECONDS_IN_DAY)
+  );
 
-  const dyr = safeDiv(entity.amount, totalAssets.times(days.toBigDecimal()));
+  if (formattedCurrentTimestamp.equals(formattedLastTimestamp)) {
+    const currentTotal = rewardTotal.total.plus(entity.amount);
+    const days = formattedCurrentTimestamp.minus(formattedPreviousDateTimestamp).div(SECONDS_IN_DAY);
 
-  log.info("[RewardTotal] {} {} [TotalAssets] {}", [days.toString(), dyr.toString(), totalAssets.toString()]);
+    const dyr = safeDiv(currentTotal.minus(rewardTotal.previousDateTotal), totalAssets.times(days.toBigDecimal()));
 
-  rewardTotal.total = rewardTotal.total.plus(entity.amount);
-  rewardTotal.lastAmount = entity.amount;
-  rewardTotal.dyr = dyr;
-  rewardTotal.lastNewVestingBITUAmount = entity.newVestingBITUAmount;
-  rewardTotal.lastBlockNumber = event.block.number;
-  rewardTotal.lastTimestamp = event.block.timestamp;
-  rewardTotal.lastTransactionHash = event.transaction.hash;
+    log.info(
+      "[equals] formattedCurrentTimestamp {} {}, formattedLastTimestamp {} {}, formattedPreviousDateTimestamp {} {}, days {}, dyr {}, TotalAssets {}",
+      [
+        event.block.timestamp.toString(),
+        formattedCurrentTimestamp.toString(),
+        rewardTotal.lastTimestamp.toString(),
+        formattedLastTimestamp.toString(),
+        rewardTotal.previousDateTimestamp.toString(),
+        formattedPreviousDateTimestamp.toString(),
+        days.toString(),
+        dyr.toString(),
+        totalAssets.toString(),
+      ]
+    );
+
+    rewardTotal.total = currentTotal;
+    rewardTotal.lastAmount = entity.amount;
+    rewardTotal.dyr = dyr;
+    rewardTotal.lastNewVestingBITUAmount = entity.newVestingBITUAmount;
+    rewardTotal.lastBlockNumber = event.block.number;
+    rewardTotal.lastTimestamp = event.block.timestamp;
+    rewardTotal.lastTransactionHash = event.transaction.hash;
+  } else {
+    const currentTotal = rewardTotal.total.plus(entity.amount);
+    const days = formattedCurrentTimestamp.minus(formattedLastTimestamp).div(SECONDS_IN_DAY);
+
+    const dyr = safeDiv(entity.amount, totalAssets.times(days.toBigDecimal()));
+
+    log.info(
+      "[equals] formattedCurrentTimestamp {} {}, formattedLastTimestamp {} {}, formattedPreviousDateTimestamp {} {}, days {}, dyr {}, TotalAssets {}",
+      [
+        event.block.timestamp.toString(),
+        formattedCurrentTimestamp.toString(),
+        rewardTotal.lastTimestamp.toString(),
+        formattedLastTimestamp.toString(),
+        rewardTotal.previousDateTimestamp.toString(),
+        formattedPreviousDateTimestamp.toString(),
+        days.toString(),
+        dyr.toString(),
+        totalAssets.toString(),
+      ]
+    );
+
+    rewardTotal.previousDateTotal = rewardTotal.total;
+    rewardTotal.previousDateTimestamp = rewardTotal.lastTimestamp;
+
+    rewardTotal.total = currentTotal;
+    rewardTotal.lastAmount = entity.amount;
+    rewardTotal.dyr = dyr;
+    rewardTotal.lastNewVestingBITUAmount = entity.newVestingBITUAmount;
+    rewardTotal.lastBlockNumber = event.block.number;
+    rewardTotal.lastTimestamp = event.block.timestamp;
+    rewardTotal.lastTransactionHash = event.transaction.hash;
+  }
 
   rewardTotal.save();
 }

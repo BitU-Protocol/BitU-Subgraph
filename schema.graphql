@@ -84,6 +84,9 @@ type RewardTotal @entity {
   lastBlockNumber: BigInt!
   lastTimestamp: BigInt!
   lastTransactionHash: Bytes!
+
+  previousDateTimestamp: BigInt!
+  previousDateTotal: BigDecimal!
 }
 
 # BITU & SBITU

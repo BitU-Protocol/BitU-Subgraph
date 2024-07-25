@@ -92,6 +92,10 @@ export function loadRewardTotal(id: string): RewardTotal {
     rewardTotal.lastBlockNumber = BIG_INT_ZERO;
     rewardTotal.lastTimestamp = INITIALIZE_REWARD_TIMESTAMP;
     rewardTotal.lastTransactionHash = Bytes.fromI32(0);
+
+    rewardTotal.previousDateTotal = BIG_DECIMAL_ZERO;
+    rewardTotal.previousDateTimestamp = INITIALIZE_REWARD_TIMESTAMP;
+
     rewardTotal.save();
   }
 
