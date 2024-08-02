@@ -3,10 +3,12 @@ import {
   Mint as MintEvent,
   Redeem as RedeemEvent,
 } from "../generated/BitUMinting/BitUMinting";
+import { Redeem } from "../generated/schema";
 import {
   handleCollateralAssetInLiqiudationEvent,
   handleCollateralAssetInMintEvent,
   handleCollateralAssetInRedeemEvent,
+  handleRedeemStatistics,
 } from "./entities/collateralAsset";
 import {
   handleUserCollateralAssetInLiqiudationEvent,
@@ -20,6 +22,7 @@ export function handleMint(event: MintEvent): void {
 }
 
 export function handleRedeem(event: RedeemEvent): void {
+  handleRedeemStatistics(event);
   handleCollateralAssetInRedeemEvent(event);
   handleUserCollateralAssetInRedeemEvent(event);
 }

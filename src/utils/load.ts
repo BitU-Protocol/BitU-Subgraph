@@ -1,4 +1,4 @@
-import { Address, Bytes } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 import {
   CollateralAsset,
   RewardTotal,
@@ -7,9 +7,11 @@ import {
   UserCollateralAsset,
   TokenHolder,
   Holder,
+  RedeemDayData,
+  Redeem,
 } from "../../generated/schema";
 import { getDecimals, getName, getSymbol } from "./token";
-import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, INITIALIZE_REWARD_TIMESTAMP } from "../constants";
+import { ADDRESS_ZERO, BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, INITIALIZE_REWARD_TIMESTAMP } from "../constants";
 
 export function loadCollateralAsset(address: Address): CollateralAsset {
   let assetToken = CollateralAsset.load(address.toHexString());
@@ -67,6 +69,51 @@ export function loadUserCollateralAsset(user: Address, token: Address): UserColl
   }
 
   return userAssetToken as UserCollateralAsset;
+}
+
+export function loadRedeem(id: Bytes, tokenAddress: Address, dayDataId: string): Redeem {
+  let redeem = Redeem.load(id);
+  if (!redeem) {
+    redeem = new Redeem(id);
+    redeem.redeemer = ADDRESS_ZERO;
+    redeem.tokenAddress = tokenAddress;
+    redeem.symbol = getSymbol(tokenAddress);
+    redeem.name = getName(tokenAddress);
+    redeem.decimals = getDecimals(tokenAddress);
+    redeem.collateral_amount = BIG_DECIMAL_ZERO;
+    redeem.bitu_amount = BIG_DECIMAL_ZERO;
+    redeem.collateral_ratio = BIG_INT_ZERO;
+    redeem.interest = BIG_DECIMAL_ZERO;
+    redeem.timestamp = BIG_INT_ZERO;
+    redeem.blockNumber = BIG_INT_ZERO;
+    redeem.blockTimestamp = BIG_INT_ZERO;
+    redeem.transactionHash = Bytes.fromI32(0);
+    redeem.dayData = dayDataId;
+    redeem.save();
+  }
+
+  return redeem as Redeem;
+}
+
+export function loadRedeemDayData(timestamp: BigInt, tokenAddress: Address): RedeemDayData {
+  const SECONDS_IN_DAY = BigInt.fromI32(60 * 60 * 24);
+  const dayId = timestamp.div(SECONDS_IN_DAY);
+  const dayStartTimestamp = dayId.times(SECONDS_IN_DAY);
+
+  let redeemDayData = RedeemDayData.load(dayId.toString());
+  if (!redeemDayData) {
+    redeemDayData = new RedeemDayData(dayId.toString());
+    redeemDayData.date = dayStartTimestamp.toI32();
+    redeemDayData.tokenAddress = tokenAddress;
+    redeemDayData.symbol = getSymbol(tokenAddress);
+    redeemDayData.name = getName(tokenAddress);
+    redeemDayData.decimals = getDecimals(tokenAddress);
+    redeemDayData.collateral_amount = BIG_DECIMAL_ZERO;
+    redeemDayData.bitu_amount = BIG_DECIMAL_ZERO;
+    redeemDayData.save();
+  }
+
+  return redeemDayData as RedeemDayData;
 }
 
 export function loadUser(address: Address): User {

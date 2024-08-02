@@ -65,6 +65,38 @@ type User @entity {
   collateralAssets: [UserCollateralAsset!]! @derivedFrom(field: "user")
 }
 
+type Redeem @entity {
+  id: Bytes!
+  redeemer: Bytes! # address
+  tokenAddress: Bytes! # address
+  symbol: String!
+  name: String!
+  decimals: BigInt!
+  collateral_amount: BigDecimal! # uint256
+  bitu_amount: BigDecimal! # uint256
+  collateral_ratio: BigInt! # uint256
+  interest: BigDecimal! # uint256
+  timestamp: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+  dayData: RedeemDayData!
+}
+
+type RedeemDayData @entity {
+  # timestamp / 86400
+  id: ID!
+  # date - hour start timestamp
+  date: Int!
+  tokenAddress: Bytes! # address
+  symbol: String!
+  name: String!
+  decimals: BigInt!
+  collateral_amount: BigDecimal! # uint256
+  bitu_amount: BigDecimal! # uint256
+  redeem: [Redeem!]! @derivedFrom(field: "dayData")
+}
+
 # Staking Contract
 type RewardsReceived @entity {
   id: Bytes!

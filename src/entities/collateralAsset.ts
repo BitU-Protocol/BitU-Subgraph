@@ -6,7 +6,7 @@ import {
 } from "../../generated/BitUMinting/BitUMinting";
 import { ERC20_DECIMALS_NUMBER } from "../constants";
 import { formatUnits } from "../utils/formatUnits";
-import { loadCollateralAsset } from "../utils/load";
+import { loadCollateralAsset, loadRedeem, loadRedeemDayData } from "../utils/load";
 import { getOracle, getPrice } from "../utils/oracle";
 import { safeDiv } from "../utils/safeDiv";
 
@@ -94,4 +94,34 @@ export function handleCollateralAssetInLiqiudationEvent(event: LiqiudationEvent)
   );
 
   collateralAsset.save();
+}
+
+export function handleRedeemStatistics(event: RedeemEvent): void {
+  const redeemDayData = loadRedeemDayData(event.block.timestamp, event.params.collateral_asset);
+
+  const redeem = loadRedeem(
+    event.transaction.hash.concatI32(event.logIndex.toI32()),
+    event.params.collateral_asset,
+    redeemDayData.id
+  );
+  redeem.redeemer = event.params.redeemer;
+  redeem.collateral_amount = formatUnits(event.params.collateral_amount, ERC20_DECIMALS_NUMBER);
+  redeem.bitu_amount = formatUnits(event.params.bitu_amount, ERC20_DECIMALS_NUMBER);
+  redeem.collateral_ratio = event.params.collateral_ratio;
+  redeem.interest = formatUnits(event.params.interest, ERC20_DECIMALS_NUMBER);
+  redeem.timestamp = event.params.timestamp;
+  redeem.blockNumber = event.block.number;
+  redeem.blockTimestamp = event.block.timestamp;
+  redeem.transactionHash = event.transaction.hash;
+
+  redeemDayData.collateral_amount = redeemDayData.bitu_amount.plus(
+    formatUnits(event.params.collateral_amount, ERC20_DECIMALS_NUMBER)
+  );
+  redeemDayData.bitu_amount = redeemDayData.bitu_amount.plus(
+    formatUnits(event.params.bitu_amount, ERC20_DECIMALS_NUMBER)
+  );
+
+  redeem.dayData = redeemDayData.id;
+  redeem.save();
+  redeemDayData.save();
 }
