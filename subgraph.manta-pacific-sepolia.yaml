@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: BITU
-    network: manta-pacific-testnet
+    network: manta-pacific-sepolia
     source:
       address: "0xb7B754a710f0cb25AcB441FFe5442620Fe77e0C7"
       abi: BITU
-      startBlock: 39517163
+      startBlock: 1747012
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -34,11 +34,11 @@ dataSources:
       file: ./src/bitu.ts
   - kind: ethereum
     name: BitUMinting
-    network: manta-pacific-testnet
+    network: manta-pacific-sepolia
     source:
       address: "0x841E62Bc8AAbAb8B8bb228e2B5fF89E51e5cdcee"
       abi: BitUMinting
-      startBlock: 40149979
+      startBlock: 1747028
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -71,11 +71,11 @@ dataSources:
       file: ./src/minting.ts
   - kind: ethereum
     name: BitUStaking
-    network: manta-pacific-testnet
+    network: manta-pacific-sepolia
     source:
       address: "0x604139F0fC1EFcD630b0185047Fe180bE03c1c21"
       abi: BitUStaking
-      startBlock: 39517193
+      startBlock: 1747041
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
